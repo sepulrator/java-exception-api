@@ -41,10 +41,4 @@ public class FileDefinitionServiceImpl implements FileDefinitionService {
       }
     }
   }
-
-  public String getErrorMessage(String... errorKeyParameters) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
 }

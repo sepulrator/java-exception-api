@@ -74,6 +74,15 @@ public class ExceptionInfo {
     return this;
   }
 
+  @Override
+  public String toString() {
+    return "ExceptionInfo [exception=" + exception + ", name=" + name + ", className=" + className
+        + ", methodName=" + methodName + ", fileName=" + fileName + ", lineNumber=" + lineNumber
+        + ", arguments=" + arguments + "]";
+  }
+  
+  
+
 
 
 }
