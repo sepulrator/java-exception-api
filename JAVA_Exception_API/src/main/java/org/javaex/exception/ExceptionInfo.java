@@ -1,5 +1,7 @@
 package org.javaex.exception;
 
+import java.util.List;
+
 public class ExceptionInfo {
   private Throwable exception;
   private String name;
@@ -7,6 +9,7 @@ public class ExceptionInfo {
   private String methodName;
   private String fileName;
   private int lineNumber;
+  private List<Object> arguments;
 
   public Throwable getException() {
     return exception;
@@ -59,6 +62,15 @@ public class ExceptionInfo {
 
   public ExceptionInfo setLineNumber(int lineNumber) {
     this.lineNumber = lineNumber;
+    return this;
+  }
+
+  public List<Object> getArguments() {
+    return arguments;
+  }
+
+  public ExceptionInfo setArguments(List<Object> arguments) {
+    this.arguments = arguments;
     return this;
   }
 
