@@ -21,25 +21,24 @@ public class ExceptionEventPublisher {
     super();
   }
 
-  public void publishEvent(ExceptionInfo e) {
+  public void publishEvent(ExceptionInfo exceptionInfo) {
     try {
       String className = getExceptionAdviceAnnotatedClassName();
-      ExceptionListener exceptionListener = createExceptionListenerInstance(e, className);
+      ExceptionListener exceptionListener = createExceptionListenerInstance(exceptionInfo, className);
       System.out.println(exceptionListener.getClass());
       exceptionListener.onExceptionThrow();
-      invokeExceptionCallBackMethod(e, exceptionListener);
-            
+      invokeExceptionCallBackMethod(exceptionInfo, exceptionListener);
     } catch (Exception e1) {
       System.err.println("");
       e1.printStackTrace();
     }
   }
 
-  private void invokeExceptionCallBackMethod(ExceptionInfo e, ExceptionListener exceptionListener)
+  private void invokeExceptionCallBackMethod(ExceptionInfo exceptionInfo, ExceptionListener exceptionListener)
       throws ClassNotFoundException, IllegalAccessException, InvocationTargetException {
     Class<?> exceptionListenerClass = exceptionListener.getClass();
     final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(exceptionListenerClass.getDeclaredMethods()));
-    Class<?> exceptionClass = e.getException().getClass();
+    Class<?> exceptionClass = exceptionInfo.getException().getClass();
     for (final Method method : allMethods) {
       if (method.isAnnotationPresent(ExceptionHandler.class)) {
         ExceptionHandler annotInstance = method.getAnnotation(ExceptionHandler.class);
