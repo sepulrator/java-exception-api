@@ -2,7 +2,7 @@ Java exception api is a exception utility library for handling and managing exce
 
 
 ## Exception handling
-You can handle any exception by inheriting ThrownExceptionListener classes. You can specify which methods will be executed by annotating method with @ExceptionHandler and specifying child exception class name. In the below example, afterNullPointerException executes after any method throws a null pointer exception
+You can handle any exception by inheriting ThrownExceptionListener classes. You can specify which methods will be executed by annotating method with @ExceptionHandler and specifying child exception class name. In the below example, afterNullPointerException() method is executed after any method throws a null pointer exception.
 
 ```java
 @ExceptionAdvice
