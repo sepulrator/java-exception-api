@@ -8,14 +8,16 @@ You can handle any exception by inheriting ThrownExceptionListener classes. You 
 @ExceptionAdvice
 public class MyExceptionAdvice {
 
-  @ExceptionHandler({NullPointerException.class})
-  public void afterNullPointerException(ExceptionInfo exceptionInfo) {
+  @ExceptionHandler({NullPointerException.class,ArrayIndexOutOfBoundsException.class})
+  public void logException(ExceptionInfo exceptionInfo) {
+     // do some stuff
     System.out.println(exceptionInfo.toString());
   }
   
   @ExceptionHandler({IllegalArgumentException.class})
   @ExceptionScan({"com.test"})
-  public void afterZeroDenominatorException(ExceptionInfo exceptionInfo) {
+  public void afterIllegalArgumentException(ExceptionInfo exceptionInfo) {
+    // do some stuff
     System.out.println(exceptionInfo.toString());
   }
 
