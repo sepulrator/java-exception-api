@@ -10,8 +10,8 @@ import java.util.Set;
 
 import org.javaex.annotation.ExceptionAdvice;
 import org.javaex.annotation.ExceptionHandler;
+import org.javaex.annotation.ExceptionScan;
 import org.javaex.exception.ExceptionInfo;
-import org.javaex.exception.listener.ExceptionListener;
 import org.reflections.Reflections;
 import org.reflections.scanners.TypeAnnotationsScanner;
 
@@ -24,30 +24,43 @@ public class ExceptionEventPublisher {
   public void publishEvent(ExceptionInfo exceptionInfo) {
     try {
       String className = getExceptionAdviceAnnotatedClassName();
-      ExceptionListener exceptionListener = createExceptionListenerInstance(exceptionInfo, className);
-      System.out.println(exceptionListener.getClass());
-      exceptionListener.onExceptionThrow();
-      invokeExceptionCallBackMethod(exceptionInfo, exceptionListener);
+      Object exceptionAdviceInstance = createExceptionListenerInstance(className);
+      System.out.println(exceptionAdviceInstance.getClass());
+      invokeExceptionCallBackMethod(exceptionInfo, exceptionAdviceInstance);
     } catch (Exception e1) {
       System.err.println("");
       e1.printStackTrace();
     }
   }
 
-  private void invokeExceptionCallBackMethod(ExceptionInfo exceptionInfo, ExceptionListener exceptionListener)
+  private void invokeExceptionCallBackMethod(ExceptionInfo exceptionInfo, Object exceptionAdviceInstance)
       throws ClassNotFoundException, IllegalAccessException, InvocationTargetException {
-    Class<?> exceptionListenerClass = exceptionListener.getClass();
+    Class<?> exceptionListenerClass = exceptionAdviceInstance.getClass();
     final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(exceptionListenerClass.getDeclaredMethods()));
     Class<?> exceptionClass = exceptionInfo.getException().getClass();
     for (final Method method : allMethods) {
       if (method.isAnnotationPresent(ExceptionHandler.class)) {
-        ExceptionHandler annotInstance = method.getAnnotation(ExceptionHandler.class);
-        List<Class<?>> exceptionList = new ArrayList<Class<?>>(Arrays.asList(annotInstance.value()));
+        ExceptionHandler handlerInstance = method.getAnnotation(ExceptionHandler.class);
+        
+        List<Class<?>> exceptionList = new ArrayList<Class<?>>(Arrays.asList(handlerInstance.value()));
         for (Class<?> item : exceptionList) {
           Class<?> itemClass = Class.forName(item.getName());
           if (itemClass.isAssignableFrom(exceptionClass)) {
-            method.invoke(exceptionListener, null);
-            return;
+            
+            ExceptionScan scanPackagesInstance =  method.getAnnotation(ExceptionScan.class);
+            if (scanPackagesInstance == null) {
+              method.invoke(exceptionAdviceInstance, exceptionInfo);
+              return;
+            } else {
+              List<String> scanPackageList = new ArrayList<String>(Arrays.asList(scanPackagesInstance.value()));
+              for (String scanPackage : scanPackageList) {
+                if (exceptionInfo.getClassName().contains(scanPackage)) {
+                  method.invoke(exceptionAdviceInstance, exceptionInfo);
+                  return;
+                }
+              }
+            }
+            
           }
         }
         
@@ -55,13 +68,12 @@ public class ExceptionEventPublisher {
     }
   }
 
-  private <E> ExceptionListener createExceptionListenerInstance(ExceptionInfo e, String className)
+  private <E> Object createExceptionListenerInstance(String className)
       throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
       IllegalAccessException, InvocationTargetException {
     Class<?> c = (Class<E>) Class.forName(className);
-    Constructor constructor = c.getConstructor(new Class[] {e.getClass()});
-    ExceptionListener object1 = (ExceptionListener) constructor.newInstance(new Object[] {e});
-    return object1;
+    Constructor constructor = c.getConstructor(new Class[] {});
+    return (Object) constructor.newInstance(new Object[] {});
   }
 
   private String getExceptionAdviceAnnotatedClassName() {
