@@ -6,27 +6,17 @@ You can handle any exception by inheriting ThrownExceptionListener classes. You 
 
 ```java
 @ExceptionAdvice
-public class MyThrowedExceptionListener extends ThrownExceptionListener {
+public class MyExceptionAdvice {
 
-  public MyThrowedExceptionListener() {
-    super();
-    // TODO Auto-generated constructor stub
-  }
-
-  public MyThrowedExceptionListener(ExceptionInfo exceptionInfo) {
-    super(exceptionInfo);
-    // TODO Auto-generated constructor stub
-  }
-
-  @Override
-  public void afterExceptionThrown() {
-    System.out.println("afterAnyExceptionThrown");
-    
+  @ExceptionHandler({NullPointerException.class})
+  public void afterNullPointerException(ExceptionInfo exceptionInfo) {
+    System.out.println(exceptionInfo.toString());
   }
   
-  @ExceptionHandler({NullPointerException.class})
-  public void afterNullPointerException() {
-    System.out.println("null pointer occurs");
+  @ExceptionHandler({IllegalArgumentException.class})
+  @ExceptionScan({"com.test"})
+  public void afterZeroDenominatorException(ExceptionInfo exceptionInfo) {
+    System.out.println(exceptionInfo.toString());
   }
 
 }
