@@ -18,8 +18,8 @@ public class ThrowedExceptionAspectHandler {
   
   
   @AfterThrowing(pointcut = "call(* *.*(..))", throwing = "exception")
-  public void AfterAnyMethodThrowingException(JoinPoint joinPoint, Throwable exception) {
-    System.out.println("aspect start");
+  public void afterAnyMethodThrowingException(JoinPoint joinPoint, Throwable exception) {
+    System.out.println("aspect start: afterAnyMethodThrowingException");
     Signature signature = joinPoint.getSignature();
     String className  = signature.getDeclaringTypeName();
     String methodName = signature.getName();

@@ -1,19 +1,15 @@
 package org.javaex.exception.publisher;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
-import org.javaex.annotation.ExceptionAdvice;
 import org.javaex.annotation.ExceptionHandler;
 import org.javaex.annotation.ExceptionScan;
 import org.javaex.exception.ExceptionInfo;
-import org.reflections.Reflections;
-import org.reflections.scanners.TypeAnnotationsScanner;
+import org.javaex.exception.handler.SingletonClientExceptionHandler;
 
 public class ExceptionEventPublisher {
 
@@ -23,12 +19,9 @@ public class ExceptionEventPublisher {
 
   public void publishEvent(ExceptionInfo exceptionInfo) {
     try {
-      String className = getExceptionAdviceAnnotatedClassName();
-      Object exceptionAdviceInstance = createExceptionListenerInstance(className);
-      System.out.println(exceptionAdviceInstance.getClass());
+      Object exceptionAdviceInstance = SingletonClientExceptionHandler.getInstance();
       invokeExceptionCallBackMethod(exceptionInfo, exceptionAdviceInstance);
     } catch (Exception e1) {
-      System.err.println("");
       e1.printStackTrace();
     }
   }
@@ -68,22 +61,4 @@ public class ExceptionEventPublisher {
     }
   }
 
-  private <E> Object createExceptionListenerInstance(String className)
-      throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
-      IllegalAccessException, InvocationTargetException {
-    Class<?> c = (Class<E>) Class.forName(className);
-    Constructor constructor = c.getConstructor(new Class[] {});
-    return (Object) constructor.newInstance(new Object[] {});
-  }
-
-  private String getExceptionAdviceAnnotatedClassName() {
-    Reflections reflections = new Reflections("", new TypeAnnotationsScanner());
-
-    Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(ExceptionAdvice.class,true);
-    if (annotated.size() != 1) {
-      return "";
-    }
-    Class<?> item = (Class<?>) annotated.toArray()[0];
-    return item.getName();
-    }
 }
