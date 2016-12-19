@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import org.javaex.annotation.ExceptionAdvice;
+import org.javaex.client.ClientExceptionAdviceClassInfo;
 import org.reflections.Reflections;
 import org.reflections.scanners.TypeAnnotationsScanner;
 
@@ -13,7 +14,7 @@ public class SingletonClientExceptionHandler {
   
   public static Object getInstance() {
     if (instance == null) {
-      String clientAdviceClassName = getExceptionAdviceAnnotatedClassName();
+      String clientAdviceClassName = ClientExceptionAdviceClassInfo.className;
       
       if (clientAdviceClassName == null || clientAdviceClassName.equals("")) {
         System.err.println("exception advice class not found");
@@ -40,7 +41,7 @@ public class SingletonClientExceptionHandler {
     }
     Class<?> item = (Class<?>) annotated.toArray()[0];
     return item.getName();
-    }
+  }
   
   private static <E> Object createExceptionListenerInstance(String className)
       throws ClassNotFoundException, NoSuchMethodException, InstantiationException,

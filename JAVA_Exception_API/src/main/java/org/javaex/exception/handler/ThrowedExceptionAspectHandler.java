@@ -8,6 +8,7 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.SourceLocation;
+import org.javaex.client.ClientExceptionAdviceClassInfo;
 import org.javaex.exception.ExceptionInfo;
 import org.javaex.exception.publisher.ExceptionEventPublisher;
 
@@ -15,11 +16,14 @@ import org.javaex.exception.publisher.ExceptionEventPublisher;
 @Aspect
 public class ThrowedExceptionAspectHandler {
   
-  
-  
   @AfterThrowing(pointcut = "call(* *.*(..))", throwing = "exception")
   public void afterAnyMethodThrowingException(JoinPoint joinPoint, Throwable exception) {
     System.out.println("aspect start: afterAnyMethodThrowingException");
+    
+    if (!ClientExceptionAdviceClassInfo.isClientAdviceHandlerDefined) {
+      return;
+    }
+    
     Signature signature = joinPoint.getSignature();
     String className  = signature.getDeclaringTypeName();
     String methodName = signature.getName();
@@ -35,7 +39,7 @@ public class ThrowedExceptionAspectHandler {
     System.out.println("We have caught exception in method: "
         + methodName + " with arguments "
         + arguments + "\nand the full toString: " + "\nthe exception is: "
-        + exception.getMessage());
+        + exception.getLocalizedMessage());
     
     ExceptionInfo exceptionInfo = 
         new ExceptionInfo()

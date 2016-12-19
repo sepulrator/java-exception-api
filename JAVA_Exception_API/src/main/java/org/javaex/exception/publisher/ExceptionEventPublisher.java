@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.javaex.annotation.ExceptionHandler;
 import org.javaex.annotation.ExceptionScan;
+import org.javaex.client.ClassMethodInfo;
+import org.javaex.client.ClientExceptionAdviceClassInfo;
 import org.javaex.exception.ExceptionInfo;
 import org.javaex.exception.handler.SingletonClientExceptionHandler;
 
@@ -25,40 +27,32 @@ public class ExceptionEventPublisher {
       e1.printStackTrace();
     }
   }
-
+  
   private void invokeExceptionCallBackMethod(ExceptionInfo exceptionInfo, Object exceptionAdviceInstance)
       throws ClassNotFoundException, IllegalAccessException, InvocationTargetException {
-    Class<?> exceptionListenerClass = exceptionAdviceInstance.getClass();
-    final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(exceptionListenerClass.getDeclaredMethods()));
+    
     Class<?> exceptionClass = exceptionInfo.getException().getClass();
-    for (final Method method : allMethods) {
-      if (method.isAnnotationPresent(ExceptionHandler.class)) {
-        ExceptionHandler handlerInstance = method.getAnnotation(ExceptionHandler.class);
+    for (ClassMethodInfo methodInfo : ClientExceptionAdviceClassInfo.methodInfoList) {
+      
+      for (Class<?> exceptionHandlerClass : methodInfo.getExceptionList()) {
         
-        List<Class<?>> exceptionList = new ArrayList<Class<?>>(Arrays.asList(handlerInstance.value()));
-        for (Class<?> item : exceptionList) {
-          Class<?> itemClass = Class.forName(item.getName());
-          if (itemClass.isAssignableFrom(exceptionClass)) {
-            
-            ExceptionScan scanPackagesInstance =  method.getAnnotation(ExceptionScan.class);
-            if (scanPackagesInstance == null) {
-              method.invoke(exceptionAdviceInstance, exceptionInfo);
+        if (exceptionHandlerClass.isAssignableFrom(exceptionClass)) {
+          
+          if (methodInfo.getPackageList().isEmpty()) {
+            methodInfo.getMethod().invoke(exceptionAdviceInstance, exceptionInfo);
+            return;
+          }
+          
+          for (String scanPackage : methodInfo.getPackageList()) {
+            if (exceptionInfo.getClassName().contains(scanPackage)) {
+              methodInfo.getMethod().invoke(exceptionAdviceInstance, exceptionInfo);
               return;
-            } else {
-              List<String> scanPackageList = new ArrayList<String>(Arrays.asList(scanPackagesInstance.value()));
-              for (String scanPackage : scanPackageList) {
-                if (exceptionInfo.getClassName().contains(scanPackage)) {
-                  method.invoke(exceptionAdviceInstance, exceptionInfo);
-                  return;
-                }
-              }
             }
-            
           }
         }
-        
       }
     }
+    
   }
 
 }
