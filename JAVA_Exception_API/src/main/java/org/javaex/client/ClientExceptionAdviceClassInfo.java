@@ -11,6 +11,8 @@ import org.javaex.annotation.ExceptionHandler;
 import org.javaex.annotation.ExceptionScan;
 import org.reflections.Reflections;
 import org.reflections.scanners.TypeAnnotationsScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClientExceptionAdviceClassInfo {
   public static boolean isClientAdviceHandlerDefined = false;
@@ -18,7 +20,8 @@ public class ClientExceptionAdviceClassInfo {
   public static String className = "";
   public static List<ClassMethodInfo> methodInfoList = new ArrayList<ClassMethodInfo>(50);
 
-
+  private static final Logger log = LoggerFactory.getLogger(ClientExceptionAdviceClassInfo.class);
+  
   static {
     setClassInfo();
     setMethodInfo();
@@ -27,11 +30,11 @@ public class ClientExceptionAdviceClassInfo {
   private static void setClassInfo() {
     className = getExceptionAdviceAnnotatedClassName();
     if (className == null || className.equals("")) {
-      System.err.println("exception advice class not found");
+      log.warn("exception advice annotated class not found");
       return;
     }
+    log.info("exception advice found and configured");
     isClientAdviceHandlerDefined = true;
-
   }
 
   private static void setMethodInfo() {
@@ -57,14 +60,8 @@ public class ClientExceptionAdviceClassInfo {
         }
         
         methodInfoList.add(classMethodInfo);
-
-
       }
-
-
-
     }
-
   }
 
   private static String getExceptionAdviceAnnotatedClassName() {

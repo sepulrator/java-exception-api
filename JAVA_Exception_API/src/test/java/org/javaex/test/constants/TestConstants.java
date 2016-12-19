@@ -4,6 +4,7 @@ public class TestConstants {
   
   public enum MockException {
     NULL_POINTER_EXCEPTION,
+    CUSTOM_NULL_POINTER_EXCEPTION,
     ARITHMETIC_EXCEPTION;
   }
 }

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ClientExceptionHandler.class})
-public class ExceptionAdiveCallBackTest {
+public class ExceptionAdviceCallBackTest {
   
   @Before
   public void setUp() {

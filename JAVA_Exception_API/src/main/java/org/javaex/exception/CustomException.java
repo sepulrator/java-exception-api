@@ -1,25 +1,19 @@
 package org.javaex.exception;
 
-import org.javaex.exception.service.DefinitionService;
-import org.javaex.exception.service.FileDefinitionServiceImpl;
+import org.javaex.exception.service.DefinitionHandlerService;
+import org.javaex.exception.service.FileExceptionDefinitionHandlerService;
 
 public class CustomException extends Exception {
     private String errorCode;
-    private static DefinitionService definitionService;
+    private static DefinitionHandlerService definitionHandlerService;
     
-    public CustomException() {
+    private CustomException() {
       super();
-      definitionService = new FileDefinitionServiceImpl();
-      //definitionService = new DatabaseDefinitionServiceImpl();
-    }
-    
-    public CustomException(String errorCode) {
-      this();
-      this.errorCode = errorCode;
     }
     
     public CustomException(String... errorKeyParameters) {
-      this();
+      definitionHandlerService = FileExceptionDefinitionHandlerService.getInstance();
+      
       StringBuilder errorCode = new StringBuilder();
       int paramCount = 0;
       for (String param : errorKeyParameters) {
@@ -30,6 +24,7 @@ public class CustomException extends Exception {
           errorCode.append(",");
         }
       }
+      this.errorCode = errorCode.toString();
     }
     
     public String getErrorCode() {
@@ -42,7 +37,7 @@ public class CustomException extends Exception {
     }
 
     public String getDefinedErrorMessage() {
-      return definitionService.getErrorMessage(errorCode);
+      return definitionHandlerService.getErrorMessage(errorCode);
     }
     
 }

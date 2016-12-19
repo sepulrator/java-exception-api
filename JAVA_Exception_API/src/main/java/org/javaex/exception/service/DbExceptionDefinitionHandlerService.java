@@ -10,7 +10,7 @@ import java.sql.Statement;
 import org.javaex.database.util.DBConnectionManager;
 import org.javaex.properties.util.ExceptionConfigUtil;
 
-public class DatabaseDefinitionServiceImpl implements DatabaseDefinitionService {
+public class DbExceptionDefinitionHandlerService implements DefinitionHandlerService {
   
   private Connection connection;
   private static final String TABLE_NAME = ExceptionConfigUtil.getProperty("data.source.tableName");

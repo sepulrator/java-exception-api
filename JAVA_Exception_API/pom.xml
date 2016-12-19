@@ -37,6 +37,8 @@
 		<java.source-target.version>1.8</java.source-target.version>
 		<aspectj.version>1.8.4</aspectj.version>
 		<complianceLevel>1.6</complianceLevel>
+		<slf4j.version>1.7.22</slf4j.version>
+		<log4j.version>1.2.16</log4j.version>
 	</properties>
 
 	<distributionManagement>
@@ -143,6 +145,11 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
 	</build>
 
 	<dependencies>
@@ -188,6 +195,24 @@
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
 			<version>1.6.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

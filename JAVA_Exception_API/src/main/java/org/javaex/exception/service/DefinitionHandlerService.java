@@ -1,5 +1,5 @@
 package org.javaex.exception.service;
 
-public interface DefinitionService {
+public interface DefinitionHandlerService {
   String getErrorMessage(String errorKey);
 }

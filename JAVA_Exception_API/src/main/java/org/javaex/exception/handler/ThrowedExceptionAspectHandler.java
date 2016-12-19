@@ -3,22 +3,27 @@ package org.javaex.exception.handler;
 import java.util.Arrays;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.JoinPoint.StaticPart;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.SourceLocation;
 import org.javaex.client.ClientExceptionAdviceClassInfo;
 import org.javaex.exception.ExceptionInfo;
 import org.javaex.exception.publisher.ExceptionEventPublisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Aspect
 public class ThrowedExceptionAspectHandler {
   
+  private final Logger log = LoggerFactory.getLogger(ThrowedExceptionAspectHandler.class);
+  
   @AfterThrowing(pointcut = "call(* *.*(..))", throwing = "exception")
   public void afterAnyMethodThrowingException(JoinPoint joinPoint, Throwable exception) {
-    System.out.println("aspect start: afterAnyMethodThrowingException");
+    
+    if (log.isDebugEnabled()) {
+      log.debug("aspect start: afterAnyMethodThrowingException");
+    }
     
     if (!ClientExceptionAdviceClassInfo.isClientAdviceHandlerDefined) {
       return;
@@ -35,11 +40,12 @@ public class ThrowedExceptionAspectHandler {
         !className.equals(stackTrace[0].getClassName())) {
         return;
     }
-    
-    System.out.println("We have caught exception in method: "
-        + methodName + " with arguments "
-        + arguments + "\nand the full toString: " + "\nthe exception is: "
-        + exception.getLocalizedMessage());
+    if (log.isDebugEnabled()) {
+      log.debug("We have caught exception in method: "
+          + methodName + " with arguments "
+          + arguments + "\nand the full toString: " + "\nthe exception is: "
+          + exception.toString());
+    }
     
     ExceptionInfo exceptionInfo = 
         new ExceptionInfo()

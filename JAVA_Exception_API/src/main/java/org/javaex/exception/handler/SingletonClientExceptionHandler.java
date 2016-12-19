@@ -8,26 +8,30 @@ import org.javaex.annotation.ExceptionAdvice;
 import org.javaex.client.ClientExceptionAdviceClassInfo;
 import org.reflections.Reflections;
 import org.reflections.scanners.TypeAnnotationsScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SingletonClientExceptionHandler {
   private static Object instance = null;
   
+  private static final Logger log = LoggerFactory.getLogger(SingletonClientExceptionHandler.class);
+  
   public static Object getInstance() {
-    if (instance == null) {
+    if (instance == null && 
+        ClientExceptionAdviceClassInfo.isClientAdviceHandlerDefined) {
       String clientAdviceClassName = ClientExceptionAdviceClassInfo.className;
-      
-      if (clientAdviceClassName == null || clientAdviceClassName.equals("")) {
-        System.err.println("exception advice class not found");
-        return null;
-      }
       
       try {
         instance = createExceptionListenerInstance(clientAdviceClassName);
       } catch (Exception e) {
-        e.printStackTrace();
+        log.error("Exception occured while instantiating exception advice" + e.getLocalizedMessage());
       }
+      
+      if (instance != null) {
+        log.info(clientAdviceClassName + " is instantiating as a singleton");
+      }
+      
     }
-    
     return instance;
     
   }

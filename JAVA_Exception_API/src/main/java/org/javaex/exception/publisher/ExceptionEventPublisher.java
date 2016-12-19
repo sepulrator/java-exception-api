@@ -1,20 +1,18 @@
 package org.javaex.exception.publisher;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import org.javaex.annotation.ExceptionHandler;
-import org.javaex.annotation.ExceptionScan;
 import org.javaex.client.ClassMethodInfo;
 import org.javaex.client.ClientExceptionAdviceClassInfo;
 import org.javaex.exception.ExceptionInfo;
 import org.javaex.exception.handler.SingletonClientExceptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExceptionEventPublisher {
-
+  
+  private static final Logger log = LoggerFactory.getLogger(ClientExceptionAdviceClassInfo.class);
+  
   public ExceptionEventPublisher() {
     super();
   }
@@ -23,8 +21,8 @@ public class ExceptionEventPublisher {
     try {
       Object exceptionAdviceInstance = SingletonClientExceptionHandler.getInstance();
       invokeExceptionCallBackMethod(exceptionInfo, exceptionAdviceInstance);
-    } catch (Exception e1) {
-      e1.printStackTrace();
+    } catch (Exception e) {
+      log.error("Error when invoking callback exception handler method:" + e.toString());
     }
   }
   
@@ -40,12 +38,14 @@ public class ExceptionEventPublisher {
           
           if (methodInfo.getPackageList().isEmpty()) {
             methodInfo.getMethod().invoke(exceptionAdviceInstance, exceptionInfo);
+            log.info(methodInfo.getMethod().getName() + " method was invoked");
             return;
           }
           
           for (String scanPackage : methodInfo.getPackageList()) {
             if (exceptionInfo.getClassName().contains(scanPackage)) {
               methodInfo.getMethod().invoke(exceptionAdviceInstance, exceptionInfo);
+              log.info(methodInfo.getMethod().getName() + " method was invoked");
               return;
             }
           }

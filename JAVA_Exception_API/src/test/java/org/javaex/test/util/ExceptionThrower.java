@@ -1,6 +1,8 @@
 package org.javaex.test.util;
 
+import org.javaex.exception.CustomException;
 import org.javaex.test.constants.TestConstants.MockException;
+import org.javaex.test.customexception.MyNullPointerException;
 
 public class ExceptionThrower {
   private static ExceptionThrower instance = null;
@@ -28,7 +30,4 @@ public class ExceptionThrower {
         throw new ArithmeticException();
     }
   }
-  
-  
-
 }
