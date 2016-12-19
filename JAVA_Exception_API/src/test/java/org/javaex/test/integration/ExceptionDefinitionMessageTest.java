@@ -21,9 +21,25 @@ public class ExceptionDefinitionMessageTest {
       assertTrue("Exception message", e.getDefinedErrorMessage().equals(expectedErrorMessage));
     }
   }
+  
+  @Test
+  public void testExceptionDefinitionHandlingWithReason() {
+    try {
+      throwCustomExceptionWithReason();
+    } catch (MyNullPointerException e) {
+      String expectedErrorMessage = "My Null Pointer Exception Defined Message With ReasonCode";
+      assertTrue("Exception message", e.getDefinedErrorMessage().equals(expectedErrorMessage));
+    }
+  }
+  
   public void throwCustomException() throws MyNullPointerException {
     if (1==1)
     throw new MyNullPointerException("0001");
+  }
+  
+  public void throwCustomExceptionWithReason() throws MyNullPointerException {
+    if (1==1)
+    throw new MyNullPointerException("0001","2");
   }
   
 
