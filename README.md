@@ -36,5 +36,57 @@ public class MyExceptionAdvice {
 ```
 
 
-## Exception Message Management
+## File Based Exception Message Management
+To benefit from this feature, your exception class must extend the custom exception class like the below example. 
+Since multi code is supported, How many codes that will be used in exceptions can be determined by the client. 
+```java
+public class MyNullPointerException extends CustomException {
+  
+  public MyNullPointerException(String errorCode) {
+    super(errorCode);
+  }
+  
+  public MyNullPointerException(String errorCode, String reasonCode) {
+    super(errorCode,reasonCode);
+  }
+
+}
+```
+To get the defined error message, "exception.definition" file must be created under resources folder. 
+
+exception.definition:
+0001=My Null Pointer Exception Defined Message
+0001,2=My Null Pointer Exception Defined Message With ReasonCode
+
+Sample code for get the thrown exception message from resource file.
+```java
+    try {
+      throwCustomException();
+    } catch (MyNullPointerException e) {
+      System.err.println(e.getDefinedErrorMessage());
+      // prints out "My Null Pointer Exception Defined Message"
+    }
+    
+    try {
+      throwCustomExceptionWithReason();
+    } catch (MyNullPointerException e) {
+      System.err.println(e.getDefinedErrorMessage());
+      // prints out"My Null Pointer Exception Defined Message With ReasonCode"
+    }
+
+  public void throwCustomException() throws MyNullPointerException {
+    if (1==1)
+      throw new MyNullPointerException("0001");
+  }
+  
+  public void throwCustomExceptionWithReason() throws MyNullPointerException {
+    if (1==1)
+    throw new MyNullPointerException("0001","2");
+  }
+  
+```  
+  
+
+## DB Based Exception Message Management
+
 
