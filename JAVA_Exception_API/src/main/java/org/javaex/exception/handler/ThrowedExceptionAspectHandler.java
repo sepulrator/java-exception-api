@@ -3,9 +3,12 @@ package org.javaex.exception.handler;
 import java.util.Arrays;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.javaex.client.ClientExceptionAdviceClassInfo;
 import org.javaex.exception.ExceptionInfo;
 import org.javaex.exception.publisher.ExceptionEventPublisher;
@@ -18,15 +21,20 @@ public class ThrowedExceptionAspectHandler {
   
   private final Logger log = LoggerFactory.getLogger(ThrowedExceptionAspectHandler.class);
   
-  @AfterThrowing(pointcut = "call(* *.*(..))", throwing = "exception")
+  @Pointcut("call(* *.*(..)) && if()")
+  public static boolean anyMethodCall(JoinPoint joinPoint) {
+    if (!ClientExceptionAdviceClassInfo.isClientAdviceHandlerDefined) {
+      return false;
+    }
+    
+    return true;
+  }
+  
+  @AfterThrowing(pointcut = "anyMethodCall(joinPoint)", throwing = "exception")
   public void afterAnyMethodThrowingException(JoinPoint joinPoint, Throwable exception) {
     
     if (log.isDebugEnabled()) {
       log.debug("aspect start: afterAnyMethodThrowingException");
-    }
-    
-    if (!ClientExceptionAdviceClassInfo.isClientAdviceHandlerDefined) {
-      return;
     }
     
     Signature signature = joinPoint.getSignature();
@@ -40,6 +48,7 @@ public class ThrowedExceptionAspectHandler {
         !className.equals(stackTrace[0].getClassName())) {
         return;
     }
+    
     if (log.isDebugEnabled()) {
       log.debug("We have caught exception in method: "
           + methodName + " with arguments "
@@ -60,4 +69,18 @@ public class ThrowedExceptionAspectHandler {
     ExceptionEventPublisher exceptionEventPublisher = new ExceptionEventPublisher();
     exceptionEventPublisher.publishEvent(exceptionInfo);
   }
+  
+  /*@AfterThrowing(pointcut = "target(Exception)", throwing = "exception")
+  public void afterExceptionThrowing(JoinPoint joinPoint, Throwable exception) {
+    System.out.println("asdzxcz");
+  }
+  
+  @Before("handler(Throwable) && args(t)")
+  public void beforeExceptionCaught(JoinPoint joinPoint,Throwable t) {
+    System.out.println("xvcv");
+  }
+  /*@Before("adviceexecution()")
+  public void beforeExceptionCaught(JoinPoint joinPoint) {
+    System.out.println("vbvb");
+  }*/
 }
