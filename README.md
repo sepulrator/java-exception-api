@@ -34,7 +34,11 @@ public class MyExceptionAdvice {
 
 }
 ```
-
+## Log4j support
+Log level can be set by setting "org.javaex" package for logging. 
+```
+log4j.logger.org.javaex=DEBUG
+```
 
 ## File Based Exception Message Management
 To benefit from this feature, your exception class must extend the custom exception class like the below example. 
