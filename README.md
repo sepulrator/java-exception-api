@@ -55,8 +55,10 @@ public class MyNullPointerException extends CustomException {
 To get the defined error message, "exception.definition" file must be created under resources folder. 
 
 exception.definition:
+```
 0001=My Null Pointer Exception Defined Message
 0001,2=My Null Pointer Exception Defined Message With ReasonCode
+```
 
 Sample code for get the thrown exception message from resource file.
 ```java
