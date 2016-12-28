@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.sepulrator</groupId>
 	<artifactId>exception-util</artifactId>
-	<version>0.0.3m4</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>exception-util</name>
@@ -201,19 +201,16 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${slf4j.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
