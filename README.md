@@ -5,7 +5,7 @@ Maven repository
     <dependency>
       <groupId>com.github.sepulrator</groupId>
       <artifactId>exception-util</artifactId>
-      <version>0.0.3m4</version>
+      <version>1.0.0</version>
     </dependency>
 ```
 
@@ -92,7 +92,8 @@ Sample code for get the thrown exception message from resource file.
   
 ```  
   
+  
+  
 
-## DB Based Exception Message Management
 
 
